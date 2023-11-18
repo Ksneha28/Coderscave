@@ -1,0 +1,85 @@
+import tkinter as tk
+import random
+import time
+
+root = tk.Tk()
+root.title("Typing Speed Test")
+root.geometry("800x600")
+
+frame = tk.Frame(root)
+frame.pack(pady=20)
+
+#defining global variables
+start_time = None
+end_time = None
+total_words_typed = 0
+
+def start_the_test():
+    global start_time
+    start_time = time.time()
+    entry_label.config(state="normal")
+    entry_label.delete(0, tk.END)
+    entry_label.focus()
+
+def end_the_test():
+    global end_time
+    global start_time
+    
+    end_time=time.time()
+    time_taken = round(end_time - start_time)
+    time_taken_output.delete(0, tk.END)
+    time_taken_output.insert(0, f"{time_taken} seconds")
+
+    calculate_wpm()
+    
+def calculate_wpm():
+    global total_words_typed
+    global start_time
+    global end_time
+
+    typed_text = entry_label.get()
+    entry_label.config(state="disabled")
+    words_typed = len(typed_text.split())
+    total_words_typed =+ words_typed
+    time_taken_in_minutes = (end_time - start_time) / 60
+    wpm = (total_words_typed/time_taken_in_minutes) if time_taken_in_minutes > 0 else 0
+    words_per_minute_output.delete(0,tk.END)
+    words_per_minute_output.insert(0, f"{wpm:.2f} WPM")
+
+
+typing_speed_test_label = tk.Label(frame, text="TYPING SPEED TEST", font=("arial", 24, "bold"), bg="light cyan", fg="dodgerBlue4")
+typing_speed_test_label.grid(row=0, column=0, rowspan=2, columnspan=3, pady=(0, 20))
+
+text_list = [
+        "The wind is really bad today",
+        "The sun rises in the east",
+        "I would like to have a cup of coffee "
+        ]
+random.shuffle(text_list)
+
+text_frame = tk.Label(frame, text = text_list[0], font=("arial",18), justify="center")
+text_frame.grid(row=6, column=0, columnspan=3, pady=20)
+
+entry_label = tk.Entry(frame,justify="center",width=60, bd=4,font=("arial", 16),relief=tk.GROOVE)
+entry_label.grid(row=7, column=0, columnspan=3)
+entry_label.config(state="disabled")
+
+start_button = tk.Button(frame, width=10, text="start", justify="center", bg="peachpuff2", font=("arial", 16), command=start_the_test)
+start_button.grid(row=8, column=0, columnspan=1, padx=(10, 5))
+
+end_button = tk.Button(frame, width=10, text="end", justify="center", bg="peachpuff2", font=("arial", 16), command=end_the_test)
+end_button.grid(row=8, column=2, columnspan=1, padx=(5,10))
+
+time_taken_output_label = tk.Label(frame, text="Time taken:", font=("arial", 16), justify="center" )
+time_taken_output_label.grid(row=10, column=0, columnspan=1, pady=(10, 5))
+
+time_taken_output = tk.Entry(frame, width=20, justify="center", font=("arial", 16), bd=4)
+time_taken_output .grid(row=10, column=1, columnspan=2, pady=(5,10))
+
+words_per_minute_label = tk.Label(frame, text="WPM:", justify="center", font=("arial", 16))
+words_per_minute_label.grid(row=11, column=0, columnspan=1, pady=(10,5))
+
+words_per_minute_output = tk.Entry(frame, width=20, justify="center", font = ("arial", 16), bd=4)
+words_per_minute_output.grid(row=11, column=1, columnspan=2, pady=(5,10))
+
+root.mainloop()
